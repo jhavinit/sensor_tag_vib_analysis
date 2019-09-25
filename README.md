@@ -12,7 +12,7 @@ Change USE_READ = 1 rather than true
 Install python2+,nodejs,npm
 
 ### Step 4:
-Run the command "npm install sensortag"
+Run all the command in sudo mode
 
 ### Step 5:
 Chek out:
@@ -38,5 +38,14 @@ libbluetooth-dev
 
 Install noble: "sudo apt-get install bluetooth bluez libbluetooth-dev libudev-dev"
 then "sudo ln -s /usr/bin/nodejs /usr/bin/node"
+"sudo pkg install gmake"
 "npm install noble"
 "sudo setcap cap_net_raw+eip $(eval readlink -f `which node`)"
+"sudo apt-get install libcap2-bin"
+"npm install noble-device"
+
+### Step 8:
+Run the command "npm install sensortag"
+
+### Step 9:
+sudo node test.js
