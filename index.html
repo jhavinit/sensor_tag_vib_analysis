@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script></head>
+        <title>Live Data Visualization</title>
+    </head>
+	
+	<body>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="./code/highstock.js"></script>
+	<script src="./code/modules/exporting.js"></script>
+	<script src="./code/modules/export-data.js"></script>
+
+	<center><h1>Accelometer Data(X-axis)</h1>
+	<div id="container" style="height: 400px; min-width: 310px"></div>
+
+<script type="text/javascript">
+current_path = 'http://127.0.0.1/blog/eY-100.json';
+history_path = 'http://127.0.0.1/blog/eY-100.txt';
+Highcharts.stockChart('container', {
+    chart: {
+        events: {
+            load: function () {
+                var data1 = [];
+                var series = this.series[0];
+                setInterval(function () {
+                $.getJSON(current_path, function (data) {
+                    data1 = data;
+                });
+                    var x = (new Date()).getTime(),  
+                        y = Math.round(Math.random() * 100);
+                    series.addPoint([data1[0],data1[1]], true, true);
+                }, 1000);
+            }
+        }
+    },
+
+    time: {
+        useUTC: false
+    },
+
+    rangeSelector: {
+        buttons: [{
+            count: 1,
+            type: 'minute',
+            text: '1M'
+        }, {
+            count: 5,
+            type: 'minute',
+            text: '5M'
+        }, {
+            type: 'all',
+            text: 'All'
+        }],
+        inputEnabled: false,
+        selected: 0
+    },
+
+    title: {
+        text: 'X-axis acc.data'
+    },
+
+    exporting: {
+        enabled: false
+    },
+
+    series: [{
+        name: 'X-axis',
+        data: (function () {
+            var data = [];
+
+function readTextFile(file)
+{
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                var allText = rawFile.responseText + ']';
+                //allText = allText + ']';
+                data = JSON.parse(allText);
+            }
+        }
+    }
+    rawFile.send(null);
+}
+readTextFile(history_path);
+return data;
+        }())
+    }]
+}); 
+		</script>
+	</body>
+</html>
