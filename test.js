@@ -2,7 +2,9 @@ var util = require('util');
 var async = require('async');
 var SensorTag = require('./index');
 var USE_READ = 0;
- 
+var fs = require('fs')
+
+
 function getDateTime() {
 
     var date = new Date();
@@ -144,17 +146,53 @@ SensorTag.discover(function(sensorTag) {
             callback();
           });
         } else {
+          var x_coordinate,y_coordinate,z_coordinate;
           sensorTag.on('accelerometerChange', function(x, y, z) {
-            console.log(getDateTime());
+            console.log(getDateTime()); 
+            console.log((new Date()).getTime());
             console.log('\tx = %d G', x );
+            x_coordinate = x;
             console.log('\ty = %d G', y );
+            y_coordinate = y;
             console.log('\tz = %d G', z );
+            z_coordinate = z;
+            fs.readFile('../historical_data.json', 'utf-8', function(err, data) {
+                        if (err) throw err
+                        var arrayOfObjects = JSON.parse(data);
+                        arrayOfObjects.old_data.push({
+                        x_coordinate: x_coordinate,
+                        time_data: (new Date()).getTime()
+                    })
+                      
+                    fs.writeFile('../historical_data.json', JSON.stringify(arrayOfObjects), 'utf-8', function(err) {
+	if (err) throw err
+//	console.log('Done!')
+})
+            console.log(arrayOfObjects);
+            });
+            
+            
+               fs.readFile('../live_data.json', 'utf-8', function(err, data) {
+                        if (err) throw err
+                        var arrayOfObjects = JSON.parse(data);
+                        arrayOfObjects.live_data.push({
+                        x_coordinate: x_coordinate,
+                        time_data: (new Date()).getTime()
+                    })
+                      
+                    fs.writeFileSync('../live_data.json', JSON.stringify(arrayOfObjects), {encoding:'utf8',flag:'w'}, function(err) {
+	if (err) throw err
+//	console.log('Done!')
+})
+            console.log(arrayOfObjects);
+            })
+            
             console.log('----');
             console.log(' ');
           });
         
           console.log('setAccelerometerPeriod');
-          sensorTag.setAccelerometerPeriod(2000, function(error) {
+          sensorTag.setAccelerometerPeriod(500, function(error) {
             console.log('notifyAccelerometer');
             sensorTag.notifyAccelerometer(function(error) {
               /*setTimeout(function() {
