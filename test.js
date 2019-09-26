@@ -1,24 +1,45 @@
 var util = require('util');
-
 var async = require('async');
-
 var SensorTag = require('./index');
+var USE_READ = 0;
+ 
+function getDateTime() {
 
-var USE_READ = 1;
+    var date = new Date();
 
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+
+    var min  = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+
+    var sec  = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    var year = date.getFullYear();
+
+    var month = date.getMonth() + 1;
+    month = (month < 10 ? "0" : "") + month;
+
+    var day  = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+
+    return year + ":" + month + ":" + day + ":" + hour + ":" + min + ":" + sec;
+
+} 
+ 
 SensorTag.discover(function(sensorTag) {
   console.log('discovered: ' + sensorTag);
-
   sensorTag.on('disconnect', function() {
     console.log('disconnected!');
     process.exit(0);
   });
-
+  
   async.series([
       function(callback) {
         console.log('connectAndSetUp');
         sensorTag.connectAndSetUp(callback);
-      },
+      },/*
       function(callback) {
         console.log('readDeviceName');
         sensorTag.readDeviceName(function(error, deviceName) {
@@ -105,7 +126,7 @@ SensorTag.discover(function(sensorTag) {
       function(callback) {
         console.log('disableIrTemperature');
         sensorTag.disableIrTemperature(callback);
-      },
+      },*/
       function(callback) {
         console.log('enableAccelerometer');
         sensorTag.enableAccelerometer(callback);
@@ -117,31 +138,36 @@ SensorTag.discover(function(sensorTag) {
         if (USE_READ) {
           console.log('readAccelerometer');
           sensorTag.readAccelerometer(function(error, x, y, z) {
-            console.log('\tx = %d G', x.toFixed(1));
-            console.log('\ty = %d G', y.toFixed(1));
-            console.log('\tz = %d G', z.toFixed(1));
-
+            console.log('\tx = %d G', x);
+            console.log('\ty = %d G', y);
+            console.log('\tz = %d G', z);
             callback();
           });
         } else {
           sensorTag.on('accelerometerChange', function(x, y, z) {
-            console.log('\tx = %d G', x.toFixed(1));
-            console.log('\ty = %d G', y.toFixed(1));
-            console.log('\tz = %d G', z.toFixed(1));
+            console.log(getDateTime());
+            console.log('\tx = %d G', x );
+            console.log('\ty = %d G', y );
+            console.log('\tz = %d G', z );
+            console.log('----');
+            console.log(' ');
           });
-
+        
           console.log('setAccelerometerPeriod');
-          sensorTag.setAccelerometerPeriod(500, function(error) {
+          sensorTag.setAccelerometerPeriod(2000, function(error) {
             console.log('notifyAccelerometer');
             sensorTag.notifyAccelerometer(function(error) {
-              setTimeout(function() {
+              /*setTimeout(function() {
                 console.log('unnotifyAccelerometer');
                 sensorTag.unnotifyAccelerometer(callback);
-              }, 5000);
+              }, 5000);*/
             });
           });
-        }
-      },
+          
+        
+        
+        } 
+      }/*,
       function(callback) {
         console.log('disableAccelerometer');
         sensorTag.disableAccelerometer(callback);
@@ -154,6 +180,7 @@ SensorTag.discover(function(sensorTag) {
         setTimeout(callback, 2000);
       },
       function(callback) {
+        
         if (USE_READ) {
           console.log('readHumidity');
           sensorTag.readHumidity(function(error, temperature, humidity) {
@@ -179,7 +206,9 @@ SensorTag.discover(function(sensorTag) {
             });
           });
         }
-      },
+      
+    }
+      ,
       function(callback) {
         console.log('disableHumidity');
         sensorTag.disableHumidity(callback);
@@ -407,6 +436,6 @@ SensorTag.discover(function(sensorTag) {
         console.log('disconnect');
         sensorTag.disconnect(callback);
       }
-    ]
-  );
-});
+*/
+    ]);
+}); 
