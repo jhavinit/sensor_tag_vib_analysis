@@ -1,13 +1,13 @@
 <!-- Enable CORS -->
 <!DOCTYPE HTML>
 <html>
-	<head>
+	<head> 
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script></head>
+  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> 
         <title>Live Data Visualization</title>
     </head>
 	
@@ -24,6 +24,7 @@
 	<footer style="color: white">&copy2019 VINIT NARAYAN JHA</footer>
 
 <script type="text/javascript">
+         
 function plot_coordinates(current_path,history_path,container_value,coordinate_name){
 //-----------------------------
 Highcharts.theme = {
@@ -239,10 +240,17 @@ Highcharts.stockChart(container_value, {
                 setInterval(function () {
                 $.getJSON(current_path, function (data) {
                     data1 = data;
-                });
+                }); 
+                console.log(data1[0]);
+                    console.log(data1[1]);
+                    console.log("---------");
                     var x = (new Date()).getTime(),  
                         y = Math.round(Math.random() * 100);
-                    series.addPoint([data1[0],data1[1]], true, true);
+                    if((data1[0] !== undefined) && (data1[1] !== undefined))
+                    {
+                        series.addPoint([data1[0],data1[1]], true, true);
+                    }
+                     
                 }, 1000);
             }
         }
@@ -306,9 +314,15 @@ return data;
     }]
 });
 } 
-plot_coordinates('http://127.0.0.1/blog/eY-100.json','http://127.0.0.1/blog/eY-100.txt','container_x','X-axis');
-plot_coordinates('http://127.0.0.1/blog/eY-100.json','http://127.0.0.1/blog/eY-100.txt','container_y','Y-axis');
-plot_coordinates('http://127.0.0.1/blog/eY-100.json','http://127.0.0.1/blog/eY-100.txt','container_z','Z-axis');
+
+setInterval(function updateDiv(){ 
+
+plot_coordinates('http://127.0.0.1/sensor_tag_vibrational_analysis/x_live_data.json','http://127.0.0.1/sensor_tag_vibrational_analysis/x_historical_data.txt','container_x','X-axis');
+plot_coordinates('http://127.0.0.1/sensor_tag_vibrational_analysis/y_live_data.json','http://127.0.0.1/sensor_tag_vibrational_analysis/y_historical_data.txt','container_y','Y-axis');
+plot_coordinates('http://127.0.0.1/sensor_tag_vibrational_analysis/z_live_data.json','http://127.0.0.1/sensor_tag_vibrational_analysis/z_historical_data.txt','container_z','Z-axis');
+
+},100);
+
 </script>
 	
 	</body>

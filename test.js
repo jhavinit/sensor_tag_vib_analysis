@@ -5,6 +5,19 @@ var USE_READ = 0;
 var fs = require('fs')
 
 
+function write_into_live_file(filename,insert_data){
+fs.writeFile(filename, insert_data, function (err) {
+  if (err) throw err;
+  console.log('Saved!');
+});  
+}
+function write_into_historical_file(filename,insert_data){
+fs.appendFile(filename,insert_data, function (err) {
+  if (err) throw err;
+  //console.log('Updated!');
+});
+
+}
 function getDateTime() {
 
     var date = new Date();
@@ -152,47 +165,28 @@ SensorTag.discover(function(sensorTag) {
             console.log((new Date()).getTime());
             console.log('\tx = %d G', x );
             x_coordinate = x;
+             x_coordinate_live_data = '[[' + (new Date()).getTime() + ',' + x_coordinate + ']]';
+            write_into_live_file('x_live_data.json',x_coordinate_live_data);
+            x_coordinate_historical_data = ',' + '[' + (new Date()).getTime() + ',' + x_coordinate + ']';
+            write_into_historical_file('x_historical_data.txt', x_coordinate_historical_data);
             console.log('\ty = %d G', y );
             y_coordinate = y;
+            y_coordinate_live_data = '[[' + (new Date()).getTime() + ',' + y_coordinate + ']]';
+            write_into_live_file('y_live_data.json',y_coordinate_live_data);
+            y_coordinate_historical_data = ',' + '[' + (new Date()).getTime() + ',' + y_coordinate + ']';
+            write_into_historical_file('y_historical_data.txt', y_coordinate_historical_data); 
             console.log('\tz = %d G', z );
-            z_coordinate = z;
-            fs.readFile('../historical_data.json', 'utf-8', function(err, data) {
-                        if (err) throw err
-                        var arrayOfObjects = JSON.parse(data);
-                        arrayOfObjects.old_data.push({
-                        x_coordinate: x_coordinate,
-                        time_data: (new Date()).getTime()
-                    })
-                      
-                    fs.writeFile('../historical_data.json', JSON.stringify(arrayOfObjects), 'utf-8', function(err) {
-	if (err) throw err
-//	console.log('Done!')
-})
-            console.log(arrayOfObjects);
-            });
-            
-            
-               fs.readFile('../live_data.json', 'utf-8', function(err, data) {
-                        if (err) throw err
-                        var arrayOfObjects = JSON.parse(data);
-                        arrayOfObjects.live_data.push({
-                        x_coordinate: x_coordinate,
-                        time_data: (new Date()).getTime()
-                    })
-                      
-                    fs.writeFileSync('../live_data.json', JSON.stringify(arrayOfObjects), {encoding:'utf8',flag:'w'}, function(err) {
-	if (err) throw err
-//	console.log('Done!')
-})
-            console.log(arrayOfObjects);
-            })
-            
-            console.log('----');
+            z_coordinate = z; 
+            z_coordinate_live_data = '[[' + (new Date()).getTime() + ',' + z_coordinate + ']]';
+            write_into_live_file('z_live_data.json',z_coordinate_live_data);
+            z_coordinate_historical_data = ',' + '[' + (new Date()).getTime() + ',' + z_coordinate + ']';
+            write_into_historical_file('z_historical_data.txt', z_coordinate_historical_data);
+           console.log('----');
             console.log(' ');
           });
         
           console.log('setAccelerometerPeriod');
-          sensorTag.setAccelerometerPeriod(500, function(error) {
+          sensorTag.setAccelerometerPeriod(1000, function(error) {
             console.log('notifyAccelerometer');
             sensorTag.notifyAccelerometer(function(error) {
               /*setTimeout(function() {
