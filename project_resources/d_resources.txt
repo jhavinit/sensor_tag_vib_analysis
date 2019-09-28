@@ -1,0 +1,45 @@
+1. infinite_uptime_use_cases and other applications
+
+2. http://www.ti.com/solution/condition_monitoring_sensor
+
+3. description:
+
+Description
+
+The maintenance of equipment has taken on a new level of complexity in recent years. The dependence on external agencies for specialized maintenance and repair, with the ever-increasing requirements for compliance, safety, reliability, and accuracy have become the need of the hour. In industries, about 80 percent of all equipment failure/downtime is not timely mitigated due to unplanned maintenance. Losses faced under such circumstances is about $2 million. Of these, 46 percent of unplanned downtime results in failed delivery of products to customers while 37 percent of production time is lost on a critical asset. These failures occur even when maintenance schedules are effectively executed, as most maintenance routines are generic and not data-driven based on the condition of the machines. Therefore, a data-driven predictive maintenance mechanism is required to minimize equipment failure/downtime routine.
+
+Significance/Incidence
+
+Market analysis has shown that only about 15-20% of equipment failures are due to aging, and the other 80 to 85 percent being totally time-random events owing to maintenance needs. Though they are performed based upon predefined scheduled intervals, they are not fully effective as they do not detect the conditions.
+
+Maintenance can be very expensive as it includes costs of downtime in terms of productivity, premium costs to fast track the delivery in case of long-lead components necessary for repair, salaries of employees even under downtime scenarios. In addition, running equipment in less than an optimal condition or to the point of failure can reduce the life of the asset. On an average, downtime of 5% a year translates to 18 days which is intolerable by industries.
+
+Market studies have shown that predictive maintenance helps to reduce maintenance costs of factory equipment by up to 40 percent and also reduce equipment downtime by up to 50 percent. It also reduces equipment capital investment by 3 to 5 percent by extending the lifetime of machinery. Adoption of these is challenging for small and medium scale industries in India due to sophistication and expensive solutions in the market.
+
+Alternatives - Commercial Products
+
+► Roughneck
+
+► Sage FAS
+
+► Infor EAM
+
+► Tenna
+
+
+Alternatives - Existing Solutions
+
+► Periodic monitoring of Machinery by the experts
+
+
+Adoption barriers
+
+► TCO - Total cost of Ownership
+
+► Skills/Expertise
+
+► Change of habits/Process
+
+► Integration
+
+

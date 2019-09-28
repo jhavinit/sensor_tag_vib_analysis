@@ -1,0 +1,10 @@
+1. Github for sensortag: https://github.com/sandeepmistry/node-sensortag
+
+2. Connecting multiple sensortags: http://www.luisevalencia.com/2016/12/22/reading-from-multiple-sensor-tags-with-node-js/
+
+3. Search npm sensortag libraries for sensortag libs
+
+4. http://www.blesstags.eu/
+
+5. Directly send data to remote database: https://www.youtube.com/watch?v=DVGMDYpk5Ds
+
