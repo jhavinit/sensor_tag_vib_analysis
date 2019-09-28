@@ -1,1 +1,6 @@
-dummy_data.txt
+x_historical_data.txt
+y_historical_data.txt
+z_historical_data.txt
+x_live_data.json
+y_live_data.json
+z_live_data.json
