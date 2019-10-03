@@ -41,8 +41,7 @@ function getDateTime() {
 
     return year + ":" + month + ":" + day + ":" + hour + ":" + min + ":" + sec;
 
-} 
-while(1){ 
+}  
 SensorTag.discover(function(sensorTag) {
   console.log('discovered: ' + sensorTag);
   sensorTag.on('disconnect', function() {
@@ -103,7 +102,7 @@ SensorTag.discover(function(sensorTag) {
           console.log('\tmanufacturer name = ' + manufacturerName);
           callback();
         });
-      },
+      },/*
       function(callback) {
         console.log('enableIrTemperature');
         sensorTag.enableIrTemperature(callback);
@@ -115,15 +114,16 @@ SensorTag.discover(function(sensorTag) {
         if (USE_READ) {
           console.log('readIrTemperature');
           sensorTag.readIrTemperature(function(error, objectTemperature, ambientTemperature) {
-            console.log('\tobject temperature = %d °C', objectTemperature.toFixed(1));
-            console.log('\tambient temperature = %d °C', ambientTemperature.toFixed(1));
+            console.log('\tobject temperature = %d °C', objectTemperature );
+            console.log('\tambient temperature = %d °C', ambientTemperature );
 
             callback();
           });
         } else {
           sensorTag.on('irTemperatureChange', function(objectTemperature, ambientTemperature) {
             console.log('\tobject temperature = %d °C', objectTemperature);
-            console.log('\tambient temperature = %d °C', ambientTemperature)
+            console.log('\tambient temperature = %d °C', ambientTemperature);
+            callback();
           });
 
           console.log('setIrTemperaturePeriod');
@@ -141,7 +141,7 @@ SensorTag.discover(function(sensorTag) {
       function(callback) {
         console.log('disableIrTemperature');
         sensorTag.disableIrTemperature(callback);
-      },
+      },*/
       function(callback) {
         console.log('enableAccelerometer');
         sensorTag.enableAccelerometer(callback);
@@ -161,8 +161,10 @@ SensorTag.discover(function(sensorTag) {
         } else {
           var x_coordinate,y_coordinate,z_coordinate;
           sensorTag.on('accelerometerChange', function(x, y, z) {
-            console.log(getDateTime()); 
-            console.log((new Date()).getTime());
+            console.log('--------------------------------------------');
+            console.log(' ');
+            //console.log(getDateTime()); 
+            //console.log((new Date()).getTime());
             console.log('\tx = %d G', x );
             x_coordinate = x;
              x_coordinate_live_data = '[[' + (new Date()).getTime() + ',' + x_coordinate + ']]';
@@ -181,29 +183,25 @@ SensorTag.discover(function(sensorTag) {
             write_into_live_file('z_live_data.json',z_coordinate_live_data);
             z_coordinate_historical_data = ',' + '[' + (new Date()).getTime() + ',' + z_coordinate + ']';
             write_into_historical_file('z_historical_data.txt', z_coordinate_historical_data);
-           console.log('----');
-            console.log(' ');
+            callback();
           });
         
           console.log('setAccelerometerPeriod');
           sensorTag.setAccelerometerPeriod(1000, function(error) {
             console.log('notifyAccelerometer');
             sensorTag.notifyAccelerometer(function(error) {
-              setTimeout(function() {
+            /*setTimeout(function() {
                 console.log('unnotifyAccelerometer');
                 sensorTag.unnotifyAccelerometer(callback);
-              }, 5000);
+              }, 5000);*/
             });
           });
-          
-        
-        
         } 
-      },
+      },/*
       function(callback) {
         console.log('disableAccelerometer');
         sensorTag.disableAccelerometer(callback);
-      },
+      },*/
       function(callback) {
         console.log('enableHumidity');
         sensorTag.enableHumidity(callback);
@@ -223,25 +221,25 @@ SensorTag.discover(function(sensorTag) {
           });
         } else {
           sensorTag.on('humidityChange', function(temperature, humidity) {
-            console.log('\ttemperature = %d °C', temperature.toFixed(1));
-            console.log('\thumidity = %d %', humidity.toFixed(1));
+            console.log('\ttemperature = %d °C', temperature);
+            console.log('\thumidity = %d %', humidity);
+            
+            callback();
           });
 
           console.log('setHumidityPeriod');
-          sensorTag.setHumidityPeriod(500, function(error) {
+          sensorTag.setHumidityPeriod(1000, function(error) {
             console.log('notifyHumidity');
             sensorTag.notifyHumidity(function(error) {
-              setTimeout(function() {
+             /* setTimeout(function() {
                 console.log('unnotifyHumidity');
                 sensorTag.unnotifyHumidity(callback);
-              }, 5000);
+              }, 5000); */
             });
           });
         }
-      
-    }
-      ,
-      function(callback) {
+    },
+      /*function(callback) {
         console.log('disableHumidity');
         sensorTag.disableHumidity(callback);
       },
@@ -267,6 +265,7 @@ SensorTag.discover(function(sensorTag) {
             console.log('\tx = %d μT', x );
             console.log('\ty = %d μT', y );
             console.log('\tz = %d μT', z );
+            callback();
           });
 
           console.log('setMagnetometerPeriod');
@@ -284,7 +283,7 @@ SensorTag.discover(function(sensorTag) {
       function(callback) {
         console.log('disableMagnetometer');
         sensorTag.disableMagnetometer(callback);
-      },
+      },*/
       function(callback) {
         console.log('enableBarometricPressure');
         sensorTag.enableBarometricPressure(callback);
@@ -303,24 +302,25 @@ SensorTag.discover(function(sensorTag) {
         } else {
           sensorTag.on('barometricPressureChange', function(pressure) {
             console.log('\tpressure = %d mBar', pressure );
+            callback();
           });
 
           console.log('setBarometricPressurePeriod');
-          sensorTag.setBarometricPressurePeriod(500, function(error) {
+          sensorTag.setBarometricPressurePeriod(1000, function(error) {
             console.log('notifyBarometricPressure');
             sensorTag.notifyBarometricPressure(function(error) {
-              setTimeout(function() {
+             /*setTimeout(function() {
                 console.log('unnotifyBarometricPressure');
                 sensorTag.unnotifyBarometricPressure(callback);
-              }, 5000);
+              }, 5000);*/
             });
           });
         }
-      },
+      },/*
       function(callback) {
         console.log('disableBarometricPressure');
         sensorTag.disableBarometricPressure(callback);
-      },
+      },*/
       function(callback) {
         console.log('enableGyroscope');
         sensorTag.enableGyroscope(callback);
@@ -343,20 +343,21 @@ SensorTag.discover(function(sensorTag) {
             console.log('\tx = %d °/s', x );
             console.log('\ty = %d °/s', y );
             console.log('\tz = %d °/s', z );
+            //callback();
           });
 
           console.log('setGyroscopePeriod');
-          sensorTag.setGyroscopePeriod(500, function(error) {
+          sensorTag.setGyroscopePeriod(1000, function(error) {
             console.log('notifyGyroscope');
             sensorTag.notifyGyroscope(function(error) {
-              setTimeout(function() {
+            /*  setTimeout(function() {
                 console.log('unnotifyGyroscope');
                 sensorTag.unnotifyGyroscope(callback);
-              }, 5000);
+              }, 5000); */
             });
           });
         }
-      },
+      },/*
       function(callback) {
         console.log('disableGyroscope');
         sensorTag.disableGyroscope(callback);
@@ -422,6 +423,7 @@ SensorTag.discover(function(sensorTag) {
               } else {
                 sensorTag.on('luxometerChange', function(lux) {
                   console.log('\tlux = %d', lux);
+                  callback();
                 });
 
                 console.log('setLuxometer');
@@ -468,7 +470,6 @@ SensorTag.discover(function(sensorTag) {
         console.log('disconnect');
         sensorTag.disconnect(callback);
         process.exit(0);
-      }
+      }*/
     ]);
 });
-} 
