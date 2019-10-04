@@ -18,10 +18,11 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
+    "noble": "^1.9.1",
     "noble-device": "^1.4.1"
   },
   "devDependencies": {
-    "async": "~0.2.7",
-    "jshint": "~1.1.0"
+    "async": "^0.2.10",
+    "jshint": "^2.10.2"
   }
 }

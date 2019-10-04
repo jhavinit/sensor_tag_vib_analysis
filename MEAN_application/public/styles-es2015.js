@@ -338,7 +338,7 @@ if (content.locals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /var/www/html/sensor_tag_vibrational_analysis/MEAN_application/angular-src/src/styles.css */"./src/styles.css");
+module.exports = __webpack_require__(/*! /var/www/html/Sensor_tag_vibrational_analysis/MEAN_application/angular-src/src/styles.css */"./src/styles.css");
 
 
 /***/ })
