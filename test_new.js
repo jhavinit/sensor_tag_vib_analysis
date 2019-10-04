@@ -3,7 +3,19 @@ var async = require('async');
 var SensorTag = require('./index');
 var USE_READ = 0;
 var fs = require('fs')
+var AWS = require("aws-sdk");
 
+AWS.config.update({
+  region: "us-east-2", 
+    endpoint: "dynamodb.us-east-2.amazonaws.com",
+    accessKeyId: "AKIAJ2LVHFHEX7ARP5JQ",
+    secretAccessKey: "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"
+});
+
+var docClient = new AWS.DynamoDB.DocumentClient();
+var table = "DhjFNng38H3AQZ7p_sensor_tag_data";
+
+var acc_x_data_tp = 0,acc_y_data_tp=0,acc_z_data_tp=0,temp_data_tp=0,humidity_data_tp=0,gyro_x_data_tp=0,gyro_y_data_tp=0,gyro_z_data_tp=0,pressure_data_tp=0,system_id_tp=0;
 
 function write_into_live_file(filename,insert_data){
 fs.writeFile(filename, insert_data, function (err) {
@@ -11,13 +23,59 @@ fs.writeFile(filename, insert_data, function (err) {
   //console.log('Saved!');
 });  
 }
+
 function write_into_historical_file(filename,insert_data){
 fs.appendFile(filename,insert_data, function (err) {
   if (err) throw err;
   //console.log('Updated!');
 });
-
 }
+
+function read_from_uid_file(){
+  fs.readFile('dynamodb_read_file.txt', function (err, data) {
+                    if (err) throw err;
+    console.log("MAIN DATA=",data);
+    return data;
+});
+}
+
+function update_uid_file(uiid){
+fs.writeFile('dynamodb_read_file.txt', (uiid + 1), function (err) {
+  if (err) throw err;
+  //console.log('Saved!');
+});  
+}
+
+function write_into_dynamodb(uid,system_id,x_axis,y_axis,z_axis,gyro_x,gyro_y,gyro_z,temp_data,humidity_data,pressure_data){
+//console.log("UID=");
+//console.log(uid);
+var params = {
+    TableName:table,
+    Item:{
+        "uid": uid,
+        "system_id": system_id, 
+        "x_axis": x_axis,
+        "y_axis": y_axis,
+        "z_axis": z_axis,
+        "gyro_x": gyro_x,
+        "gyro_y": gyro_y,
+        "gyro_z": gyro_z,
+        "temp_data": temp_data,
+        "humidity_data": humidity_data,
+        "pressure_data": pressure_data,
+        "timestamp_data": (new Date()).getTime()   
+    }
+};
+console.log("Adding a new item...");
+docClient.put(params, function(err, data) {
+    if (err) {
+        console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+    } else {
+        console.log("Added item:", JSON.stringify(data, null, 2));
+    }
+});
+}
+
 function getDateTime() {
 
     var date = new Date();
@@ -65,6 +123,7 @@ SensorTag.discover(function(sensorTag) {
         console.log('readSystemId');
         sensorTag.readSystemId(function(error, systemId) {
           console.log('\tsystem id = ' + systemId);
+          system_id_tp = systemId;
           callback();
         });
       },
@@ -166,23 +225,29 @@ SensorTag.discover(function(sensorTag) {
             //console.log(getDateTime()); 
             //console.log((new Date()).getTime());
             console.log('\tx = %d G', x );
-            x_coordinate = x;
-             x_coordinate_live_data = '[[' + (new Date()).getTime() + ',' + x_coordinate + ']]';
+            acc_x_data_tp = x;
+            /*x_coordinate = x;
+            x_coordinate_live_data = '[[' + (new Date()).getTime() + ',' + x_coordinate + ']]';
             write_into_live_file('x_live_data.json',x_coordinate_live_data);
             x_coordinate_historical_data = ',' + '[' + (new Date()).getTime() + ',' + x_coordinate + ']';
             write_into_historical_file('x_historical_data.txt', x_coordinate_historical_data);
+            */
             console.log('\ty = %d G', y );
-            y_coordinate = y;
+            acc_y_data_tp = y;
+            /*y_coordinate = y;
             y_coordinate_live_data = '[[' + (new Date()).getTime() + ',' + y_coordinate + ']]';
             write_into_live_file('y_live_data.json',y_coordinate_live_data);
             y_coordinate_historical_data = ',' + '[' + (new Date()).getTime() + ',' + y_coordinate + ']';
             write_into_historical_file('y_historical_data.txt', y_coordinate_historical_data); 
+            */
             console.log('\tz = %d G', z );
-            z_coordinate = z; 
+            acc_z_data_tp = z;
+            /*z_coordinate = z; 
             z_coordinate_live_data = '[[' + (new Date()).getTime() + ',' + z_coordinate + ']]';
             write_into_live_file('z_live_data.json',z_coordinate_live_data);
             z_coordinate_historical_data = ',' + '[' + (new Date()).getTime() + ',' + z_coordinate + ']';
             write_into_historical_file('z_historical_data.txt', z_coordinate_historical_data);
+            */
             callback();
           });
         
@@ -222,8 +287,20 @@ SensorTag.discover(function(sensorTag) {
         } else {
           sensorTag.on('humidityChange', function(temperature, humidity) {
             console.log('\ttemperature = %d °C', temperature);
+            temp_data_tp = temperature;
             console.log('\thumidity = %d %', humidity);
-            
+            humidity_data_tp = humidity;
+            //uiid = read_from_uid_file();
+            var uiid = fs.readFileSync('dynamodb_read_file.txt','utf8')
+            uiid = Number(uiid.toString());
+            if(uiid !== undefined)
+            {
+              write_into_dynamodb(uiid,system_id_tp,acc_x_data_tp,acc_y_data_tp,acc_z_data_tp,gyro_x_data_tp,gyro_y_data_tp,gyro_z_data_tp,temp_data_tp,humidity_data_tp,pressure_data_tp);
+              update_uid_file(uiid);
+            }
+            else{
+            console.log('Getting undefined UID');
+            }
             callback();
           });
 
@@ -296,12 +373,12 @@ SensorTag.discover(function(sensorTag) {
           console.log('readBarometricPressure');
           sensorTag.readBarometricPressure(function(error, pressure) {
             console.log('\tpressure = %d mBar', pressure);
-
             callback();
           });
         } else {
           sensorTag.on('barometricPressureChange', function(pressure) {
             console.log('\tpressure = %d mBar', pressure );
+            pressure_data_tp = pressure;
             callback();
           });
 
@@ -341,8 +418,11 @@ SensorTag.discover(function(sensorTag) {
         } else {
           sensorTag.on('gyroscopeChange', function(x, y, z) {
             console.log('\tx = %d °/s', x );
+            gyro_x_data_tp = x;
             console.log('\ty = %d °/s', y );
+            gyro_y_data_tp = y;
             console.log('\tz = %d °/s', z );
+            gyro_z_data_tp = z;
             //callback();
           });
 
