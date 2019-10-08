@@ -11,9 +11,11 @@ export class DashboardComponent implements OnInit {
 	ngOnInit() {
 	let dataPoints = []; 
 	let chart = new CanvasJS.Chart("chartContainer",{
+		theme: "light2", 
 		exportEnabled: true,
 		title:{
-			text:"Live machine monitoring"
+			text:"X-axis monitoring",
+			fontSize: 15,
 		},
 		data: [{
 			type: "spline",
